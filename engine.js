@@ -35,7 +35,7 @@ module.exports = function(options) {
     };
   });
 
-  const minHeaderWidth = options.minHeaderWidth || 4;
+  const minHeaderWidth = options.minHeaderWidth || 6;
   const maxHeaderWidth = options.maxHeaderWidth || 72;
 
   const branchName = branch.sync() || '';

@@ -15,7 +15,7 @@ const options = {
   maxHeaderWidth:
     config.maxHeaderWidth || 72,
   minHeaderWidth:
-    config.minHeaderWidth || 4,
+    config.minHeaderWidth || 6,
   maxLineWidth:
     config.maxLineWidth || 100
 };
