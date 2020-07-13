@@ -89,7 +89,7 @@ module.exports = function(options) {
         };
 
         // Hard limit this line in the validate
-        const head = answers.type + ': ' + answers.subject + ' #' + branchName + ']';
+        const head = answers.type + ': ' + answers.subject + ' #' + branchName;
 
         // Wrap these lines at options.maxLineWidth characters
         var body = answers.body ? wrap(answers.body, wrapOptions) : false;

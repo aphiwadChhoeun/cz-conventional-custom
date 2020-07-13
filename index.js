@@ -7,6 +7,7 @@ var configLoader = require('commitizen').configLoader;
 var config = configLoader.load();
 
 const options = {
+  disableEmoji: false,
   types: conventionalCommitTypes.types,
   defaultType: config.defaultType,
   defaultSubject: config.defaultSubject,
