@@ -17,8 +17,14 @@ and then add the following to package.json:
   },
   "config": {
     "commitizen": {
-      "path": "./node_modules/aphiwadChhoeun/cz-conventional-custom"
+      "path": "./node_modules/cz-conventional-cbsi"
     }
   }
 }
+```
+
+now when you're ready to commit, run:
+```git
+git add .
+npm run commit
 ```
