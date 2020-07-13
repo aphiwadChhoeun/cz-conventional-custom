@@ -55,7 +55,7 @@ module.exports = function(options) {
         {
           type: 'list',
           name: 'type',
-          message: "Select the type of change that you're committing:",
+          message: 'Select the type of change that you\'re committing:',
           choices: choices,
           default: options.defaultType
         },
@@ -78,7 +78,7 @@ module.exports = function(options) {
           message:
             'Provide a longer description of the change: (press enter to skip)\n',
           default: options.defaultBody
-        },
+        }
       ]).then(function(answers) {
         var wrapOptions = {
           trim: true,
@@ -89,7 +89,7 @@ module.exports = function(options) {
         };
 
         // Hard limit this line in the validate
-        const head = answers.type + ': ' + answers.subject + ' #' + branchName;
+        const head = answers.type + ': ' + types[answers.type].emoji + ' ' + answers.subject + ' #' + branchName;
 
         // Wrap these lines at options.maxLineWidth characters
         var body = answers.body ? wrap(answers.body, wrapOptions) : false;
