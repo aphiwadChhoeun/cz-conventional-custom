@@ -4,7 +4,6 @@ var wrap = require('word-wrap');
 var map = require('lodash.map');
 var longest = require('longest');
 var rightPad = require('right-pad');
-var chalk = require('chalk');
 const branch = require('git-branch');
 
 const LimitedInputPrompt = require('./LimitedInputPrompt');
@@ -40,23 +39,8 @@ module.exports = function(options) {
   const maxHeaderWidth = options.maxHeaderWidth || 72;
 
   const branchName = branch.sync() || '';
-  const jiraIssueRegex = /(?<jiraIssue>\/[A-Z]+-\d+)/;
-  const matchResult = branchName.match(jiraIssueRegex);
-  const jiraIssue =
-    matchResult && matchResult.groups && matchResult.groups.jiraIssue;
 
   return {
-    // When a user runs `git cz`, prompter will
-    // be executed. We pass you cz, which currently
-    // is just an instance of inquirer.js. Using
-    // this you can ask questions and get answers.
-    //
-    // The commit callback should be executed when
-    // you're ready to send back a commit template
-    // to git.
-    //
-    // By default, we'll de-indent your commit
-    // template and will keep empty lines.
     prompter: function(cz, commit) {
       cz.registerPrompt('limitedInput', LimitedInputPrompt);
 
@@ -76,45 +60,11 @@ module.exports = function(options) {
           default: options.defaultType
         },
         {
-          type: 'input',
-          name: 'jira',
-          message: 'Enter JIRA issue (DAZ-12345):',
-          when: options.jiraMode,
-          default: jiraIssue ? jiraIssue.substring(1) : '',
-          validate: function(jira) {
-            return /^[A-Z]+-[0-9]+$/.test(jira);
-          },
-          filter: function(jira) {
-            return jira.toUpperCase();
-          }
-        },
-        {
-          type: 'input',
-          name: 'scope',
-          when: !options.skipScope,
-          message:
-            'What is the scope of this change (e.g. component or file name): (press enter to skip)',
-          default: options.defaultScope,
-          filter: function(value) {
-            return value.trim().toLowerCase();
-          }
-        },
-        {
           type: 'limitedInput',
           name: 'subject',
           message: 'Write a short, imperative tense description of the change:',
           default: options.defaultSubject,
           maxLength: maxHeaderWidth,
-          leadingLabel: answers => {
-            const jira = answers.jira ? ` ${answers.jira}` : '';
-            let scope = '';
-
-            if (answers.scope && answers.scope !== 'none') {
-              scope = `(${answers.scope})`;
-            }
-
-            return `${answers.type}${scope}:${jira}`;
-          },
           validate: input =>
             input.length >= minHeaderWidth ||
             `The subject must have at least ${minHeaderWidth} characters`,
@@ -129,65 +79,6 @@ module.exports = function(options) {
             'Provide a longer description of the change: (press enter to skip)\n',
           default: options.defaultBody
         },
-        {
-          type: 'confirm',
-          name: 'isBreaking',
-          message: 'Are there any breaking changes?',
-          default: false
-        },
-        {
-          type: 'input',
-          name: 'breakingBody',
-          default: '-',
-          message:
-            'A BREAKING CHANGE commit requires a body. Please enter a longer description of the commit itself:\n',
-          when: function(answers) {
-            return answers.isBreaking && !answers.body;
-          },
-          validate: function(breakingBody, answers) {
-            return (
-              breakingBody.trim().length > 0 ||
-              'Body is required for BREAKING CHANGE'
-            );
-          }
-        },
-        {
-          type: 'input',
-          name: 'breaking',
-          message: 'Describe the breaking changes:\n',
-          when: function(answers) {
-            return answers.isBreaking;
-          }
-        },
-
-        {
-          type: 'confirm',
-          name: 'isIssueAffected',
-          message: 'Does this change affect any open issues?',
-          default: options.defaultIssues ? true : false,
-          when: !options.jiraMode
-        },
-        {
-          type: 'input',
-          name: 'issuesBody',
-          default: '-',
-          message:
-            'If issues are closed, the commit requires a body. Please enter a longer description of the commit itself:\n',
-          when: function(answers) {
-            return (
-              answers.isIssueAffected && !answers.body && !answers.breakingBody
-            );
-          }
-        },
-        {
-          type: 'input',
-          name: 'issues',
-          message: 'Add issue references (e.g. "fix #123", "re #123".):\n',
-          when: function(answers) {
-            return answers.isIssueAffected;
-          },
-          default: options.defaultIssues ? options.defaultIssues : undefined
-        }
       ]).then(function(answers) {
         var wrapOptions = {
           trim: true,
@@ -197,26 +88,13 @@ module.exports = function(options) {
           width: options.maxLineWidth
         };
 
-        // parentheses are only needed when a scope is present
-        var scope = answers.scope ? '(' + answers.scope + ')' : '';
-        var jira = answers.jira ? answers.jira + ' ' : '';
-
         // Hard limit this line in the validate
-        const head = answers.type + scope + ': ' + jira + answers.subject;
+        const head = answers.type + ': ' + answers.subject + '[' + branchName + ']';
 
         // Wrap these lines at options.maxLineWidth characters
         var body = answers.body ? wrap(answers.body, wrapOptions) : false;
 
-        // Apply breaking change prefix, removing it if already present
-        var breaking = answers.breaking ? answers.breaking.trim() : '';
-        breaking = breaking
-          ? 'BREAKING CHANGE: ' + breaking.replace(/^BREAKING CHANGE: /, '')
-          : '';
-        breaking = breaking ? wrap(breaking, wrapOptions) : false;
-
-        var issues = answers.issues ? wrap(answers.issues, wrapOptions) : false;
-
-        commit(filter([head, body, breaking, issues]).join('\n\n'));
+        commit(filter([head, body]).join('\n\n'));
       });
     }
   };

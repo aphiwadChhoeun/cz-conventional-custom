@@ -1,27 +1,24 @@
 {
-  "name": "@digitalroute/cz-conventional-changelog-for-jira",
-  "version": "0.0.0-semantically-released",
-  "description": "Commitizen adapter following the conventional-changelog format and also asking for JIRA issue.",
+  "name": "cz-conventional-cbsi",
+  "version": "0.0.1",
+  "description": "Commitizen adapter following the conventional-changelog format and also hooking up with JIRA issue.",
   "main": "index.js",
   "scripts": {
     "commit": "git-cz",
-    "test": "mocha *.test.js",
-    "format": "prettier --write *.js",
-    "semantic-release": "semantic-release"
+    "format": "prettier --write *.js"
   },
-  "homepage": "https://github.com/digitalroute/cz-conventional-changelog-for-jira",
+  "homepage": "https://github.com/aphiwadChhoeun/cz-conventional-custom",
   "repository": {
     "type": "git",
-    "url": "https://github.com/digitalroute/cz-conventional-changelog-for-jira.git"
+    "url": "https://github.com/aphiwadChhoeun/cz-conventional-custom.git"
   },
   "engineStrict": true,
   "engines": {
     "node": ">= 10"
   },
-  "author": "Marcus Johansson <polarn@gmail.com>",
+  "author": "Aphiwad Chhoeun <aphiwad.chhoeun@cbsinteractive.com>",
   "license": "MIT",
   "dependencies": {
-    "chalk": "^2.4.1",
     "commitizen": "^4.0.3",
     "git-branch": "^2.0.1",
     "lodash.map": "^4.5.1",
@@ -30,28 +27,16 @@
     "word-wrap": "^1.0.3"
   },
   "devDependencies": {
-    "@types/chai": "^4.1.7",
-    "@types/mocha": "^5.2.7",
-    "chai": "^4.2.0",
     "cosmiconfig": "^5.2.1",
     "cz-conventional-changelog": "^3.1.0",
-    "mocha": "^6.2.0",
-    "mock-require": "^3.0.3",
-    "prettier": "^1.15.3",
-    "semantic-release": "^15.13.3",
-    "semver": "^6.2.0"
-  },
-  "optionalDependencies": {
-    "@commitlint/load": ">6.1.1"
+    "prettier": "^1.15.3"
   },
   "config": {
     "commitizen": {
-      "path": "./index.js",
-      "jiraMode": false,
-      "skipScope": true
+      "path": "./index.js"
     }
   },
   "publishConfig": {
-    "access": "public"
+    "registry": "http://registry.cbs.com:4873"
   }
 }
